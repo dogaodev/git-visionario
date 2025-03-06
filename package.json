@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "Projeto de bot Visionário",
   "main": "index.js",
-  "scripts": {
-    "start": "node index.js"
-  },
+ "scripts": {
+  "build": "echo 'No build script defined'"
+},
   "dependencies": {
     "express": "^4.17.1",
     "discord.js": "^13.3.1"
