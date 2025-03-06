@@ -1,3 +1,8 @@
 [build]
-  functions = "netlify/functions"
-  functions = "public"
+  publish = "/public"
+  command = "npm run build"  # Ou outro comando de build se necessário
+
+[[redirects]]
+  from = "/"
+  to = "/index.html"
+  status = 200
