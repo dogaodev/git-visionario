@@ -1,12 +1,30 @@
 const axios = require('axios');
 require('dotenv').config();
 
+const KeyAuth = require('./keyauth'); // Importa o sistema de KeyAuth
+
 exports.handler = async (event, context) => {
-    const API_KEY = process.env.YOUTUBE_API_KEY || "AIzaSyAfb29L9WVbJcJVGnqK0L9-hdIaIO0bxAM";  
+    const API_KEY = process.env.YOUTUBE_API_KEY;
     const SEARCH_URL = 'https://www.googleapis.com/youtube/v3/search';
     const DETAILS_URL = 'https://www.googleapis.com/youtube/v3/videos';
 
-    const { search } = event.queryStringParameters;
+    const { search, api_key } = event.queryStringParameters;
+
+    if (!api_key) {
+        return {
+            statusCode: 401,
+            body: JSON.stringify({ error: 'Unauthorized. API key is required.' })
+        };
+    }
+
+    // Verifica se a chave fornecida é válida no KeyAuth
+    const isValidKey = await KeyAuth.validate(api_key);
+    if (!isValidKey) {
+        return {
+            statusCode: 403,
+            body: JSON.stringify({ error: 'Forbidden. Invalid API key.' })
+        };
+    }
 
     if (!search) {
         return {
@@ -16,7 +34,6 @@ exports.handler = async (event, context) => {
     }
 
     try {
-        // Faz a busca inicial no YouTube
         const searchResponse = await axios.get(SEARCH_URL, {
             params: {
                 part: 'snippet',
@@ -34,10 +51,8 @@ exports.handler = async (event, context) => {
             };
         }
 
-        // Obtém os IDs dos vídeos encontrados
         const videoIds = searchResponse.data.items.map(item => item.id.videoId).join(',');
 
-        // Busca detalhes dos vídeos (duração e visualizações)
         const detailsResponse = await axios.get(DETAILS_URL, {
             params: {
                 part: 'contentDetails,statistics',
@@ -54,7 +69,6 @@ exports.handler = async (event, context) => {
             };
         });
 
-        // Formata os dados dos vídeos
         const videos = searchResponse.data.items.map(item => {
             const videoId = item.id.videoId;
             return {

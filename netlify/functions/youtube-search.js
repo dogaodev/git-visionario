@@ -1,34 +1,68 @@
 const axios = require('axios');
-require('dotenv').config();
+
+// Configuração do KeyAuth
+const KEYAUTH_URL = "https://keyauth.win/api/1.3/";
+const APP_NAME = "1";
+const OWNER_ID = "CVVEioBafh";
+const APP_SECRET = "a8dc27b3c76e8ed49cb979b09425a908fa173e32f9f56448265ec1fbeb7ba580";
+const APP_VERSION = "1.0";
+
+// API do YouTube
+const YOUTUBE_API_KEY = "AIzaSyAj0uMyoj89SX-6d8AG6NRE5PZu6RLgCAw";
+const YOUTUBE_API_URL = "https://www.googleapis.com/youtube/v3/search";
+
+// Função para validar a chave no KeyAuth
+async function validarKey(api_key) {
+    try {
+        const response = await axios.post(`${KEYAUTH_URL}`, {
+            type: "license",
+            key: api_key,
+            name: APP_NAME,
+            ownerid: OWNER_ID
+        });
+
+        return response.data.success; // Retorna true se a chave for válida
+    } catch (error) {
+        return false;
+    }
+}
 
 exports.handler = async (event, context) => {
-    // Defina sua chave da API aqui
-    const API_KEY = process.env.YOUTUBE_API_KEY || "AIzaSyAfb29L9WVbJcJVGnqK0L9-hdIaIO0bxAM";  
-    const API_URL = 'https://www.googleapis.com/youtube/v3/search';
+    const { search, api_key } = event.queryStringParameters;
 
-    // Pegue o parâmetro de pesquisa
-    const { search } = event.queryStringParameters;
+    if (!api_key) {
+        return {
+            statusCode: 401,
+            body: JSON.stringify({ error: "Unauthorized. API Key is required." })
+        };
+    }
+
+    const keyValida = await validarKey(api_key);
+    if (!keyValida) {
+        return {
+            statusCode: 403,
+            body: JSON.stringify({ error: "Invalid API Key." })
+        };
+    }
 
     if (!search) {
         return {
             statusCode: 400,
-            body: JSON.stringify({ error: 'Search query is required.' })
+            body: JSON.stringify({ error: "Search query is required." })
         };
     }
 
     try {
-        // Fazendo a requisição para a API do YouTube
-        const response = await axios.get(API_URL, {
+        const response = await axios.get(YOUTUBE_API_URL, {
             params: {
-                part: 'snippet',
+                part: "snippet",
                 q: search,
-                key: API_KEY,  // Agora usa a chave interna, sem precisar passar na URL
-                type: 'video',
+                key: YOUTUBE_API_KEY,
+                type: "video",
                 maxResults: 5
             }
         });
 
-        // Formata e retorna os dados dos vídeos encontrados
         const videos = response.data.items.map(item => ({
             title: item.snippet.title,
             thumbnail: item.snippet.thumbnails.high.url,
@@ -43,7 +77,7 @@ exports.handler = async (event, context) => {
     } catch (error) {
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: `Failed to fetch from YouTube API. ${error.message}` })
+            body: JSON.stringify({ error: "Failed to fetch from YouTube API." })
         };
     }
 };
