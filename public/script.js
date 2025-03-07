@@ -1,8 +1,9 @@
 const axios = require('axios');
+require('dotenv').config();
 
 exports.handler = async (event, context) => {
     // Defina sua chave da API aqui
-    const API_KEY = process.env.YOUTUBE_API_KEY;  // Pega a chave da API das variáveis de ambiente
+    const API_KEY = process.env.API_KEY;  // Pega a chave da API das variáveis de ambiente
     const API_URL = 'https://www.googleapis.com/youtube/v3/search';
 
     // Pegue o parâmetro de pesquisa e a chave da API da URL
