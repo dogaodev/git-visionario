@@ -1,7 +1,7 @@
 async function buscarNoYouTube() {
   const searchQuery = document.getElementById('search').value;
   const apiKey = 'visionario';  // A API Key que você definiu
-  const url = `https://visionarioapi.netlify.app/api/search/youtube?search=${searchQuery}&api_key=${apiKey}`;
+  const url = `https://visionarioapi.netlify.app/api/youtube-search?search=${searchQuery}&api_key=${apiKey}`;
 
   try {
       const response = await fetch(url);
