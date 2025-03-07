@@ -1,21 +1,9 @@
 const axios = require('axios');
-require('dotenv').config();
 
 exports.handler = async (event, context) => {
-    // Defina sua chave da API aqui
-    const API_KEY = process.env.API_KEY;  // Pega a chave da API das variáveis de ambiente
     const API_URL = 'https://www.googleapis.com/youtube/v3/search';
 
-    // Pegue o parâmetro de pesquisa e a chave da API da URL
-    const { search, api_key } = event.queryStringParameters;
-
-    // Se a API key não for fornecida ou não for válida, retorne um erro
-    if (!api_key || api_key.trim() === '') {
-        return {
-            statusCode: 401,
-            body: JSON.stringify({ error: 'Unauthorized. API Key is missing.' })
-        };
-    }
+    const { search } = event.queryStringParameters;  // Obtendo o parâmetro de busca
 
     if (!search) {
         return {
@@ -30,7 +18,6 @@ exports.handler = async (event, context) => {
             params: {
                 part: 'snippet',
                 q: search,
-                key: API_KEY,
                 type: 'video',
                 maxResults: 5
             }
@@ -42,8 +29,7 @@ exports.handler = async (event, context) => {
             const videoDetailsResponse = await axios.get('https://www.googleapis.com/youtube/v3/videos', {
                 params: {
                     part: 'contentDetails,statistics',
-                    id: item.id.videoId,
-                    key: API_KEY
+                    id: item.id.videoId
                 }
             });
             const videoDetails = videoDetailsResponse.data.items[0];
