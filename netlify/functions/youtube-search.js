@@ -8,7 +8,7 @@ const API_KEYS = [
 ];
 
 // API do YouTube
-const YOUTUBE_API_KEY = "AIzaSyAj0uMyoj89SX-6d8AG6NRE5PZu6RLgCAw";
+const YOUTUBE_API_KEY = "AIzaSyAfb29L9WVbJcJVGnqK0L9-hdIaIO0bxAM";
 const YOUTUBE_API_URL = "https://www.googleapis.com/youtube/v3/search";
 
 exports.handler = async (event, context) => {

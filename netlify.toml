@@ -7,4 +7,4 @@
   to = "/.netlify/functions/:splat"
   status = 200
 [build.environment]
-  YOUTUBE_API_KEY = "AIzaSyAj0uMyoj89SX-6d8AG6NRE5PZu6RLgCAw"
+  YOUTUBE_API_KEY = "AIzaSyAfb29L9WVbJcJVGnqK0L9-hdIaIO0bxAM"
