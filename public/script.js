@@ -1,7 +1,12 @@
 const axios = require('axios');
 require('dotenv').config();
 
-const KeyAuth = require('./keyauth'); // Importa o sistema de KeyAuth
+// Lista de chaves válidas
+const API_KEYS = [
+    "visionario",
+    "outra_key_456",
+    "key_exemplo_789"
+];
 
 exports.handler = async (event, context) => {
     const API_KEY = process.env.YOUTUBE_API_KEY;
@@ -10,16 +15,8 @@ exports.handler = async (event, context) => {
 
     const { search, api_key } = event.queryStringParameters;
 
-    if (!api_key) {
-        return {
-            statusCode: 401,
-            body: JSON.stringify({ error: 'Unauthorized. API key is required.' })
-        };
-    }
-
-    // Verifica se a chave fornecida é válida no KeyAuth
-    const isValidKey = await KeyAuth.validate(api_key);
-    if (!isValidKey) {
+    // Verifica se a API Key foi fornecida e é válida
+    if (!api_key || !API_KEYS.includes(api_key)) {
         return {
             statusCode: 403,
             body: JSON.stringify({ error: 'Forbidden. Invalid API key.' })
