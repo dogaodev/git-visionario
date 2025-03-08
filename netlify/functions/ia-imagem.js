@@ -7,6 +7,7 @@ const validKeys = ["visionario", "OUTRA_KEY_AQUI"];
 exports.handler = async (event, context) => {
     const { text, api_key } = event.queryStringParameters;
 
+    // Verifica se a chave da API foi fornecida e se é válida
     if (!api_key || !validKeys.includes(api_key)) {
         return {
             statusCode: 401,
@@ -14,6 +15,7 @@ exports.handler = async (event, context) => {
         };
     }
 
+    // Verifica se o texto foi enviado
     if (!text) {
         return {
             statusCode: 400,
@@ -26,7 +28,8 @@ exports.handler = async (event, context) => {
             params: {
                 text: text,
                 api_key: process.env.SPIDERX_API_KEY // Melhor armazenar no .env
-            }
+            },
+            timeout: 30000 // Timeout de 30 segundos para evitar falhas por lentidão
         });
 
         return {
@@ -34,9 +37,16 @@ exports.handler = async (event, context) => {
             body: JSON.stringify(response.data)
         };
     } catch (error) {
+        let errorMessage = "Failed to fetch from Prodia API.";
+        
+        // Se houver resposta da API, pega a mensagem detalhada do erro
+        if (error.response) {
+            errorMessage = error.response.data?.error || `API Error: ${error.response.statusText}`;
+        }
+
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: "Failed to fetch from Prodia API.", details: error.message })
+            body: JSON.stringify({ error: errorMessage, details: error.message })
         };
     }
 };
