@@ -34,8 +34,7 @@ exports.handler = async (event, context) => {
             },
             headers: {
                 "User-Agent": "Mozilla/5.0" // Adiciona um User-Agent para evitar bloqueios
-            },
-           
+            }
         });
 
         // Verifica se a resposta contém a URL da imagem gerada

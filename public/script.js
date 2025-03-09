@@ -31,8 +31,7 @@ exports.handler = async (event, context) => {
             const response = await axios.get(`${PRODIA_URL}?text=${encodeURIComponent(image_text)}&api_key=${encodeURIComponent(api_key)}`, {
                 headers: {
                     "User-Agent": "Mozilla/5.0" // Adiciona um User-Agent para evitar bloqueios
-                },
-                
+                }
             });
 
             // Verifica se a resposta contém a URL da imagem gerada
@@ -75,8 +74,7 @@ exports.handler = async (event, context) => {
                 key: API_KEY,
                 type: 'video',
                 maxResults: 5
-            },
-            
+            }
         });
 
         if (!searchResponse.data.items || searchResponse.data.items.length === 0) {
@@ -93,8 +91,7 @@ exports.handler = async (event, context) => {
                 part: 'contentDetails,statistics',
                 id: videoIds,
                 key: API_KEY
-            },
-            timeout: 9000
+            }
         });
 
         const videoDetailsMap = {};
