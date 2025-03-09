@@ -1,8 +1,13 @@
 const axios = require("axios");
 require('dotenv').config();
 
+// Verifica se as variáveis de ambiente foram carregadas corretamente
+if (!process.env.VALID_API_KEYS || !process.env.PRODIA_API_KEY) {
+    throw new Error("Variáveis de ambiente não definidas corretamente.");
+}
+
 // Defina as chaves de API válidas
-const VALID_API_KEYS = process.env.VALID_API_KEYS.split(','); // Carrega as chaves válidas do .env
+const VALID_API_KEYS = process.env.VALID_API_KEYS.split(',');
 
 exports.handler = async (event, context) => {
     const { text, api_key } = event.queryStringParameters;
