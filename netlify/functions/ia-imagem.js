@@ -1,43 +1,62 @@
-const express = require('express');
-const axios = require('axios');
+const axios = require("axios");
 
-const app = express();
-const API_KEY = process.env.SPIDERX_API_KEY; // Obtém a API key do .env
+// Defina sua chave da API aqui
+const API_KEY_PRODIA = "aFsgFlKcpTHmFG98cd3i"; // Sua chave de API do Prodia
 
-exports.handler = async function(event, context) {
-    const text = event.queryStringParameters.text;
-    const apiKey = event.queryStringParameters.api_key;
-    
-    if (!text || !apiKey) {
+// Defina as chaves de API válidas
+const VALID_API_KEYS = ["visionario"]; // A chave "visionario" é válida
+
+exports.handler = async (event, context) => {
+    const { text, api_key } = event.queryStringParameters;
+
+    // Verifica se a chave foi fornecida e se é válida
+    if (!api_key || !VALID_API_KEYS.includes(api_key)) {
         return {
-            statusCode: 400,
-            body: JSON.stringify({ error: 'Parâmetros text e api_key são obrigatórios' })
+            statusCode: 403,
+            body: JSON.stringify({ error: "Chave de API inválida ou não fornecida." })
         };
     }
 
-    if (apiKey !== 'visionario') {
+    // Verifique se o parâmetro 'text' foi fornecido
+    if (!text) {
         return {
-            statusCode: 403,
-            body: JSON.stringify({ error: 'Chave de API inválida' })
+            statusCode: 400,
+            body: JSON.stringify({ error: "Parâmetro 'text' é obrigatório." })
         };
     }
 
     try {
-        const response = await axios.get(`https://api.spiderx.com.br/api/ai/prodia`, {
-            params: { text, api_key: API_KEY },
-            timeout: 30000 // Timeout de 30 segundos para evitar falhas por lentidão
+        // Fazendo a requisição para a API com o método GET
+        const response = await axios.get("https://api.spiderx.com.br/api/ai/prodia", {
+            params: { 
+                text, 
+                api_key: API_KEY_PRODIA // Adiciona a chave de API diretamente na URL
+            },
+            headers: {
+                "User-Agent": "Mozilla/5.0" // Adiciona um User-Agent para evitar bloqueios
+            },
+            timeout: 30000 // Timeout de 30 segundos para garantir que aguarde a resposta
         });
 
-        return {
-            statusCode: 200,
-            body: JSON.stringify({ image: response.data.image })
-        };
+        // Verifica se a resposta contém a URL da imagem gerada
+        if (response.data && response.data.image) {
+            return {
+                statusCode: 200,
+                body: JSON.stringify({ image: response.data.image })
+            };
+        } else {
+            return {
+                statusCode: 500,
+                body: JSON.stringify({ error: "Erro ao processar a imagem." })
+            };
+        }
     } catch (error) {
+        console.error("Erro na API externa:", error.response ? error.response.data : error.message);
         return {
-            statusCode: error.response ? error.response.status : 500,
+            statusCode: error.response?.status || 500,
             body: JSON.stringify({
-                error: 'Erro ao gerar a imagem',
-                details: error.message
+                error: "Falha ao acessar a API externa.",
+                details: error.response?.data || error.message
             })
         };
     }

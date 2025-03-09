@@ -29,17 +29,32 @@ exports.handler = async (event, context) => {
     if (image_text) {
         try {
             const response = await axios.get(`${PRODIA_URL}?text=${encodeURIComponent(image_text)}&api_key=${encodeURIComponent(api_key)}`, {
+                headers: {
+                    "User-Agent": "Mozilla/5.0" // Adiciona um User-Agent para evitar bloqueios
+                },
                 timeout: 30000 // Timeout de 30 segundos para garantir que aguarde a resposta
             });
 
-            return {
-                statusCode: 200,
-                body: JSON.stringify(response.data)
-            };
+            // Verifica se a resposta contém a URL da imagem gerada
+            if (response.data && response.data.image) {
+                return {
+                    statusCode: 200,
+                    body: JSON.stringify({ image: response.data.image })
+                };
+            } else {
+                return {
+                    statusCode: 500,
+                    body: JSON.stringify({ error: "Erro ao processar a imagem." })
+                };
+            }
         } catch (error) {
+            console.error("Erro na API externa:", error.response ? error.response.data : error.message);
             return {
-                statusCode: 500,
-                body: JSON.stringify({ error: "Falha ao buscar na API Prodia.", details: error.message })
+                statusCode: error.response?.status || 500,
+                body: JSON.stringify({
+                    error: "Falha ao acessar a API externa.",
+                    details: error.response?.data || error.message
+                })
             };
         }
     }
