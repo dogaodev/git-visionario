@@ -32,7 +32,7 @@ exports.handler = async (event, context) => {
                 headers: {
                     "User-Agent": "Mozilla/5.0" // Adiciona um User-Agent para evitar bloqueios
                 },
-                 // Timeout de 30 segundos para garantir que aguarde a resposta
+                timeout: 9000 // Timeout de 9 segundos para garantir que aguarde a resposta
             });
 
             // Verifica se a resposta contém a URL da imagem gerada
@@ -76,7 +76,7 @@ exports.handler = async (event, context) => {
                 type: 'video',
                 maxResults: 5
             },
-            timeout: 10000 // Timeout de 10 segundos para a API do YouTube
+            timeout: 9000 // Timeout de 9 segundos para a API do YouTube
         });
 
         if (!searchResponse.data.items || searchResponse.data.items.length === 0) {
@@ -94,7 +94,7 @@ exports.handler = async (event, context) => {
                 id: videoIds,
                 key: API_KEY
             },
-            timeout: 10000
+            timeout: 9000
         });
 
         const videoDetailsMap = {};
