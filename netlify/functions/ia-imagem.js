@@ -1,127 +1,62 @@
-const axios = require('axios');
-require('dotenv').config();
+const axios = require("axios");
 
-// Lista de chaves válidas
-const API_KEYS = [
-    "visionario",
-    "outra_key_456",
-    "key_exemplo_789"
-];
+// Defina sua chave da API aqui
+const API_KEY_PRODIA = "aFsgFlKcpTHmFG98cd3i"; // Sua chave de API do Prodia
 
-// URLs das APIs
-const SEARCH_URL = 'https://www.googleapis.com/youtube/v3/search';
-const DETAILS_URL = 'https://www.googleapis.com/youtube/v3/videos';
-const PRODIA_URL = 'https://api.spiderx.com.br/api/ai/prodia';
+// Defina as chaves de API válidas
+const VALID_API_KEYS = ["visionario"]; // A chave "visionario" é válida
 
 exports.handler = async (event, context) => {
-    const API_KEY = process.env.YOUTUBE_API_KEY;
-    const { search, api_key, image_text } = event.queryStringParameters;
+    const { text, api_key } = event.queryStringParameters;
 
-    // Verifica se a API Key foi fornecida e é válida
-    if (!api_key || !API_KEYS.includes(api_key)) {
+    // Verifica se a chave foi fornecida e se é válida
+    if (!api_key || !VALID_API_KEYS.includes(api_key)) {
         return {
             statusCode: 403,
-            body: JSON.stringify({ error: 'Forbidden. Invalid API key.' })
+            body: JSON.stringify({ error: "Chave de API inválida ou não fornecida." })
         };
     }
 
-    // Se for uma requisição de imagem
-    if (image_text) {
-        try {
-            const response = await axios.get(`${PRODIA_URL}?text=${encodeURIComponent(image_text)}&api_key=${encodeURIComponent(api_key)}`, {
-                headers: {
-                    "User-Agent": "Mozilla/5.0" // Adiciona um User-Agent para evitar bloqueios
-                }
-            });
-
-            // Verifica se a resposta contém a URL da imagem gerada
-            if (response.data && response.data.image) {
-                return {
-                    statusCode: 200,
-                    body: JSON.stringify({ image: response.data.image })
-                };
-            } else {
-                return {
-                    statusCode: 500,
-                    body: JSON.stringify({ error: "Erro ao processar a imagem." })
-                };
-            }
-        } catch (error) {
-            console.error("Erro na API externa:", error.response ? error.response.data : error.message);
-            return {
-                statusCode: error.response?.status || 500,
-                body: JSON.stringify({
-                    error: "Falha ao acessar a API externa.",
-                    details: error.response?.data || error.message
-                })
-            };
-        }
-    }
-
-    // Se for uma requisição de busca no YouTube
-    if (!search) {
+    // Verifique se o parâmetro 'text' foi fornecido
+    if (!text) {
         return {
             statusCode: 400,
-            body: JSON.stringify({ error: 'Search query is required.' })
+            body: JSON.stringify({ error: "Parâmetro 'text' é obrigatório." })
         };
     }
 
     try {
-        const searchResponse = await axios.get(SEARCH_URL, {
-            params: {
-                part: 'snippet',
-                q: search,
-                key: API_KEY,
-                type: 'video',
-                maxResults: 5
+        // Fazendo a requisição para a API com o método GET
+        const response = await axios.get("https://api.spiderx.com.br/api/ai/prodia", {
+            params: { 
+                text, 
+                api_key: API_KEY_PRODIA // Adiciona a chave de API diretamente na URL
+            },
+            headers: {
+                "User-Agent": "Mozilla/5.0" // Adiciona um User-Agent para evitar bloqueios
             }
         });
 
-        if (!searchResponse.data.items || searchResponse.data.items.length === 0) {
+        // Verifica se a resposta contém a URL da imagem gerada
+        if (response.data && response.data.image) {
             return {
-                statusCode: 404,
-                body: JSON.stringify({ error: 'No videos found.' })
+                statusCode: 200,
+                body: JSON.stringify({ image: response.data.image })
+            };
+        } else {
+            return {
+                statusCode: 500,
+                body: JSON.stringify({ error: "Erro ao processar a imagem." })
             };
         }
-
-        const videoIds = searchResponse.data.items.map(item => item.id.videoId).join(',');
-
-        const detailsResponse = await axios.get(DETAILS_URL, {
-            params: {
-                part: 'contentDetails,statistics',
-                id: videoIds,
-                key: API_KEY
-            }
-        });
-
-        const videoDetailsMap = {};
-        detailsResponse.data.items.forEach(video => {
-            videoDetailsMap[video.id] = {
-                duration: video.contentDetails.duration,
-                views: video.statistics.viewCount
-            };
-        });
-
-        const videos = searchResponse.data.items.map(item => {
-            const videoId = item.id.videoId;
-            return {
-                title: item.snippet.title,
-                views: videoDetailsMap[videoId]?.views || 'N/A',
-                thumbnail: item.snippet.thumbnails.high.url,
-                duration: videoDetailsMap[videoId]?.duration || 'N/A',
-                published_at: item.snippet.publishedAt,
-                url: `https://www.youtube.com/watch?v=${videoId}`
-            };
-        });
-
-        return {
-            statusCode: 200,
-            body: JSON.stringify(videos)
-        };
     } catch (error) {
+        console.error("Erro na API externa:", error.response ? error.response.data : error.message);
         return {
-            statusCode: 500,
-            body: JSON.stringify({ error: `Failed to fetch from YouTube API. Error: ${error.message}` })
+            statusCode: error.response?.status || 500,
+            body: JSON.stringify({
+                error: "Falha ao acessar a API externa.",
+                details: error.response?.data || error.message
+            })
         };
     }
 };
