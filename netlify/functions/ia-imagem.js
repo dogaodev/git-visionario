@@ -27,7 +27,7 @@ exports.handler = async (event, context) => {
         const response = await axios.get("https://api.spiderx.com.br/api/ai/prodia", {
             params: {
                 text: text,
-                api_key: process.env.SPIDERX_API_KEY // Melhor armazenar no .env
+                api_key: process.env.SPIDERX_API_KEY // Obtém a API key do .env
             },
             timeout: 30000 // Timeout de 30 segundos para evitar falhas por lentidão
         });
