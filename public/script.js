@@ -28,16 +28,13 @@ exports.handler = async (event, context) => {
     // Se for uma requisição de imagem
     if (image_text) {
         try {
-            const imageResponse = await axios.get(PRODIA_URL, {
-                params: {
-                    text: image_text,
-                    api_key: api_key
-                },
+            const response = await axios.get(`${PRODIA_URL}?text=${encodeURIComponent(image_text)}&api_key=${encodeURIComponent(api_key)}`, {
+                timeout: 30000 // Timeout de 30 segundos para garantir que aguarde a resposta
             });
 
             return {
                 statusCode: 200,
-                body: JSON.stringify(imageResponse.data)
+                body: JSON.stringify(response.data)
             };
         } catch (error) {
             return {
