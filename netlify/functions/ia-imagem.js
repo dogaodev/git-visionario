@@ -1,10 +1,8 @@
 const axios = require("axios");
-
-// Defina sua chave da API aqui
-const API_KEY_PRODIA = "aFsgFlKcpTHmFG98cd3i"; // Sua chave de API do Prodia
+require('dotenv').config();
 
 // Defina as chaves de API válidas
-const VALID_API_KEYS = ["visionario"]; // A chave "visionario" é válida
+const VALID_API_KEYS = process.env.VALID_API_KEYS.split(','); // Carrega as chaves válidas do .env
 
 exports.handler = async (event, context) => {
     const { text, api_key } = event.queryStringParameters;
@@ -30,7 +28,7 @@ exports.handler = async (event, context) => {
         const response = await axios.get("https://api.spiderx.com.br/api/ai/prodia", {
             params: { 
                 text, 
-                api_key: API_KEY_PRODIA // Adiciona a chave de API diretamente na URL
+                api_key: process.env.PRODIA_API_KEY // Adiciona a chave de API diretamente na URL
             },
             headers: {
                 "User-Agent": "Mozilla/5.0" // Adiciona um User-Agent para evitar bloqueios

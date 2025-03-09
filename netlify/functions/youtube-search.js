@@ -1,14 +1,11 @@
 const axios = require('axios');
+require('dotenv').config();
 
-// Chaves de API válidas armazenadas localmente
-const API_KEYS = [
-    "visionario",
-    "outra_key_456",
-    "chave_teste_789"
-];
+// Lista de chaves válidas
+const API_KEYS = process.env.VALID_API_KEYS.split(',');
 
 // API do YouTube
-const YOUTUBE_API_KEY = "AIzaSyAfb29L9WVbJcJVGnqK0L9-hdIaIO0bxAM";
+const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
 const YOUTUBE_API_URL = "https://www.googleapis.com/youtube/v3/search";
 
 exports.handler = async (event, context) => {

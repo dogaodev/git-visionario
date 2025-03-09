@@ -2,11 +2,7 @@ const axios = require('axios');
 require('dotenv').config();
 
 // Lista de chaves válidas
-const API_KEYS = [
-    "visionario",
-    "outra_key_456",
-    "key_exemplo_789"
-];
+const API_KEYS = process.env.VALID_API_KEYS.split(',');
 
 // URLs das APIs
 const SEARCH_URL = 'https://www.googleapis.com/youtube/v3/search';
