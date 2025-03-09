@@ -1,10 +1,12 @@
 [build]
-  functions = "netlify/functions"
-  command = "npm run build"  # Se necessário, caso você use algum comando de build
+  functions = "functions"  # Pasta onde as funções serverless estarão
+  command = "npm run build"  # Caso você precise de um comando de build, caso contrário pode ser removido
 
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
   status = 200
+
+
 [build.environment]
-  YOUTUBE_API_KEY = "AIzaSyAfb29L9WVbJcJVGnqK0L9-hdIaIO0bxAM"
+  YOUTUBE_API_KEY = "AIzaSyAfb29L9WVbJcJVGnqK0L9-hdIaIO0bxAM"  # Sua chave da API do YouTube

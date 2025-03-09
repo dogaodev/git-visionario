@@ -1,18 +1,20 @@
 const axios = require("axios");
-require('dotenv').config();
+const fs = require("fs");
 
-// Verifica se as variáveis de ambiente foram carregadas corretamente
-if (!process.env.VALID_API_KEYS || !process.env.PRODIA_API_KEY) {
-    throw new Error("Variáveis de ambiente não definidas corretamente.");
-}
+// Carregar as chaves de API a partir do arquivo apis.json
+const apis = JSON.parse(fs.readFileSync('./apis.json'));
+
+// API do Prodia
+const API_KEY_PRODIA = apis.apis.find(api => api.name === "prodia").key; // A chave do Prodia vem do arquivo JSON
 
 // Defina as chaves de API válidas
-const VALID_API_KEYS = process.env.VALID_API_KEYS.split(',');
+const VALID_API_KEYS = apis.apis.map(api => api.key); // Carrega as chaves válidas do arquivo JSON
 
+// Função que será chamada ao receber a requisição
 exports.handler = async (event, context) => {
     const { text, api_key } = event.queryStringParameters;
 
-    // Verifica se a chave foi fornecida e se é válida
+    // Verifica se a chave da API foi fornecida e se é válida
     if (!api_key || !VALID_API_KEYS.includes(api_key)) {
         return {
             statusCode: 403,
@@ -33,7 +35,7 @@ exports.handler = async (event, context) => {
         const response = await axios.get("https://api.spiderx.com.br/api/ai/prodia", {
             params: { 
                 text, 
-                api_key: process.env.PRODIA_API_KEY // Adiciona a chave de API diretamente na URL
+                api_key: API_KEY_PRODIA // Adiciona a chave de API diretamente na URL
             },
             headers: {
                 "User-Agent": "Mozilla/5.0" // Adiciona um User-Agent para evitar bloqueios
@@ -53,12 +55,11 @@ exports.handler = async (event, context) => {
             };
         }
     } catch (error) {
-        console.error("Erro na API externa:", error.response ? error.response.data : error.message);
         return {
-            statusCode: error.response?.status || 500,
+            statusCode: error.response ? error.response.status : 500,
             body: JSON.stringify({
                 error: "Falha ao acessar a API externa.",
-                details: error.response?.data || error.message
+                details: error.message
             })
         };
     }
