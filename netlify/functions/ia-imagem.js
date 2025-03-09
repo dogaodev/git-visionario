@@ -9,7 +9,7 @@ exports.handler = async function(event, context) {
                 text: text,
                 api_key: process.env.SPIDERX_API_KEY // Obtém a API key do .env
             },
-            timeout: 30000 // Timeout de 30 segundos para evitar falhas por lentidão
+             // Timeout de 30 segundos para evitar falhas por lentidão
         });
 
         return {

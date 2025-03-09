@@ -33,7 +33,6 @@ exports.handler = async (event, context) => {
                     text: image_text,
                     api_key: api_key
                 },
-                timeout: 30000 // Timeout de 30 segundos para garantir que aguarde a resposta
             });
 
             return {
