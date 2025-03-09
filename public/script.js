@@ -32,7 +32,7 @@ exports.handler = async (event, context) => {
                 headers: {
                     "User-Agent": "Mozilla/5.0" // Adiciona um User-Agent para evitar bloqueios
                 },
-                timeout: 9000 // Timeout de 9 segundos para garantir que aguarde a resposta
+                
             });
 
             // Verifica se a resposta contém a URL da imagem gerada
@@ -76,7 +76,7 @@ exports.handler = async (event, context) => {
                 type: 'video',
                 maxResults: 5
             },
-            timeout: 9000 // Timeout de 9 segundos para a API do YouTube
+            
         });
 
         if (!searchResponse.data.items || searchResponse.data.items.length === 0) {
