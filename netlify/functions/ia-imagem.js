@@ -35,7 +35,7 @@ exports.handler = async (event, context) => {
             headers: {
                 "User-Agent": "Mozilla/5.0" // Adiciona um User-Agent para evitar bloqueios
             },
-            timeout: 9000 // Timeout de 9 segundos para garantir que aguarde a resposta
+            timeout: 15000 // Timeout de 15 segundos para garantir que aguarde a resposta
         });
 
         // Verifica se a resposta contém a URL da imagem gerada
