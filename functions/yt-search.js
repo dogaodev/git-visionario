@@ -1,24 +1,12 @@
 const axios = require('axios');
-const fs = require('fs');
 
-// Carregar as chaves da API a partir do arquivo JSON
-const apis = JSON.parse(fs.readFileSync('./apis.json', 'utf8')).apis;
-
-// Função para obter a chave da API pelo nome
-const getApiKey = (name) => {
-    const api = apis.find(api => api.name === name);
-    return api ? api.key : null;
-};
-
-const YOUTUBE_API_KEY = getApiKey("youtube");
+const YOUTUBE_API_KEY = "AIzaSyAfb29L9WVbJcJVGnqK0L9-hdIaIO0bxAM";
 const YOUTUBE_API_URL = "https://www.googleapis.com/youtube/v3/search";
 
 exports.handler = async (event, context) => {
     const { search, api_key } = event.queryStringParameters;
 
-    // Verifica se a chave da API foi fornecida e se é válida
-    const validApiKey = getApiKey("visionario"); // Verificando se a chave é válida para o sistema
-    if (!api_key || api_key !== validApiKey) {
+    if (!api_key || api_key !== "visionario") {
         return {
             statusCode: 403,
             body: JSON.stringify({ error: "Unauthorized. Invalid API Key." })
