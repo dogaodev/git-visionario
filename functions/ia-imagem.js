@@ -1,17 +1,10 @@
 const axios = require("axios");
-const fs = require("fs");
 
-// Carregar as chaves de API a partir do arquivo apis.json
-const apis = JSON.parse(fs.readFileSync('./apis.json'));
+// Chaves de API diretamente no código
+const API_KEY_PRODIA = "aFsgFlKcpTHmFG98cd3i";
+const VALID_API_KEYS = ["visionario"];
 
-// API do Prodia
-const API_KEY_PRODIA = apis.apis.find(api => api.name === "prodia").key; // A chave do Prodia vem do arquivo JSON
-
-// Defina as chaves de API válidas
-const VALID_API_KEYS = apis.apis.map(api => api.key); // Carrega as chaves válidas do arquivo JSON
-
-// Função que será chamada ao receber a requisição
-exports.handler = async (event, context) => {
+exports.handler = async (event) => {
     const { text, api_key } = event.queryStringParameters;
 
     // Verifica se a chave da API foi fornecida e se é válida
@@ -31,14 +24,14 @@ exports.handler = async (event, context) => {
     }
 
     try {
-        // Fazendo a requisição para a API com o método GET
+        // Fazendo a requisição para a API externa
         const response = await axios.get("https://api.spiderx.com.br/api/ai/prodia", {
             params: { 
                 text, 
-                api_key: API_KEY_PRODIA // Adiciona a chave de API diretamente na URL
+                api_key: API_KEY_PRODIA
             },
             headers: {
-                "User-Agent": "Mozilla/5.0" // Adiciona um User-Agent para evitar bloqueios
+                "User-Agent": "Mozilla/5.0"
             }
         });
 
@@ -55,11 +48,12 @@ exports.handler = async (event, context) => {
             };
         }
     } catch (error) {
+        console.error("Erro na API externa:", error.response ? error.response.data : error.message);
         return {
-            statusCode: error.response ? error.response.status : 500,
+            statusCode: error.response?.status || 500,
             body: JSON.stringify({
                 error: "Falha ao acessar a API externa.",
-                details: error.message
+                details: error.response?.data || error.message
             })
         };
     }
