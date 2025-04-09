@@ -1,31 +1,12 @@
 {
-<<<<<<< HEAD
-  "name": "apis-visionario-v1",
+  "name": "git-visionario",
   "version": "1.0.0",
-  "main": "server.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "axios": "^1.8.4",
-    "express": "^4.21.2"
-=======
-  "name": "bot-visionario",
-  "version": "1.0.0",
-  "description": "Projeto de bot Visionário",
+  "description": "Bot Visionário",
   "main": "index.js",
   "scripts": {
-    "build": "echo 'No build script defined'"
+    "start": "node index.js"
   },
   "dependencies": {
-    "axios": "^0.24.0",
-    "dotenv": "^16.4.7",
-    "express": "^4.17.1"
->>>>>>> d9c0d2c793b452a9b714b287609cdfba605d5614
+    "discord.js": "^14.0.0"
   }
 }
