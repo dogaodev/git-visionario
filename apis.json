@@ -1,6 +1,27 @@
 {
+<<<<<<< HEAD
     "visionario": true,
     "outraChave456": true,
     "chaveAdmin789": true
   }
   
+=======
+  "apis": [
+    {
+      "name": "visionario",
+      "key": "visionario",
+      "description": "Chave de API válida para uso no sistema de IA para gerar imagens."
+    },
+    {
+      "name": "youtube",
+      "key": "AIzaSyAfb29L9WVbJcJVGnqK0L9-hdIaIO0bxAM",
+      "description": "Chave da API do YouTube para realizar buscas de vídeos."
+    },
+    {
+      "name": "prodia",
+      "key": "aFsgFlKcpTHmFG98cd3i",
+      "description": "Chave da API do Prodia para geração de imagens."
+    }
+  ]
+}
+>>>>>>> d9c0d2c793b452a9b714b287609cdfba605d5614
