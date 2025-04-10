@@ -154,6 +154,86 @@ app.get('/apis/consulta/cpf', async (req, res) => {
     }
 });
 
+app.get('/apis/consulta/telefone', async (req, res) => {
+    const { query, api_key } = req.query;
+
+    if (!query || !api_key) {
+        return res.status(400).json({ error: 'Parâmetros inválidos. Use ?query=TELEFONE&api_key=SUA_KEY' });
+    }
+
+    if (!apiKeys[api_key]) {
+        return res.status(403).json({ error: 'Api key invalida seu burro' });
+    }
+
+    try {
+        const response = await axios.get(`https://api-bruxel4s.shop/telefone?query=${encodeURIComponent(query)}`);
+        const resultadoApi = response.data;
+
+        if (!resultadoApi || Object.keys(resultadoApi).length === 0) {
+            return res.json({ error: 'Nenhum dado encontrado para este TELEFONE.' });
+        }
+
+        return res.json(resultadoApi); // ✅ Retorna tudo conforme a API original
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Erro ao consultar o TELEFONE.' });
+    }
+});
+
+app.get('/apis/consulta/cep', async (req, res) => {
+    const { query, api_key } = req.query;
+
+    if (!query || !api_key) {
+        return res.status(400).json({ error: 'Parâmetros inválidos. Use ?query=CEP&api_key=SUA_KEY' });
+    }
+
+    if (!apiKeys[api_key]) {
+        return res.status(403).json({ error: 'Api key invalida seu burro' });
+    }
+
+    try {
+        const response = await axios.get(`https://api-bruxel4s.shop/cep?query=${encodeURIComponent(query)}`);
+        const resultadoApi = response.data;
+
+        if (!resultadoApi || Object.keys(resultadoApi).length === 0) {
+            return res.json({ error: 'Nenhum dado encontrado para este CEP.' });
+        }
+
+        return res.json(resultadoApi); // ✅ Retorna tudo conforme a API original
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Erro ao consultar o CEP.' });
+    }
+});
+
+
+app.get('/apis/consulta/ip', async (req, res) => {
+    const { query, api_key } = req.query;
+
+    if (!query || !api_key) {
+        return res.status(400).json({ error: 'Parâmetros inválidos. Use ?query=ip&api_key=SUA_KEY' });
+    }
+
+    if (!apiKeys[api_key]) {
+        return res.status(403).json({ error: 'Api key invalida seu burro' });
+    }
+
+    try {
+        const response = await axios.get(`https://api-bruxel4s.shop/ip?query=${encodeURIComponent(query)}`);
+        const resultadoApi = response.data;
+
+        if (!resultadoApi || Object.keys(resultadoApi).length === 0) {
+            return res.json({ error: 'Nenhum dado encontrado para este IP.' });
+        }
+
+        return res.json(resultadoApi); // ✅ Retorna tudo conforme a API original
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Erro ao consultar o IP.' });
+    }
+});
+
+
 
 // Inicia o servidor
 app.listen(PORT, () => {
