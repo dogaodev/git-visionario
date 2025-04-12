@@ -231,8 +231,81 @@ app.get('/apis/consulta/ip', async (req, res) => {
         console.error(error);
         return res.status(500).json({ error: 'Erro ao consultar o IP.' });
     }
-});
 
+});
+app.get('/apis/ia/iavisionario', async (req, res) => {
+    const { query, api_key } = req.query;
+  
+    if (!query || !api_key) {
+      return res.status(400).json({
+        error: 'Parâmetros faltando. Use ?query=sua_mensagem&api_key=sua_key'
+      });
+    }
+  
+    // Carrega e valida o api_key com apis.json
+    let validKeys;
+    try {
+      validKeys = JSON.parse(fs.readFileSync('./apis.json', 'utf-8'));
+    } catch (err) {
+      return res.status(500).json({ error: 'Erro ao ler o arquivo apis.json' });
+    }
+  
+    if (!validKeys[api_key]) {
+      return res.status(403).json({ error: 'API Key inválida ou não autorizada.' });
+    }
+  
+    const prompt = query.toLowerCase();
+  
+    // Lista de respostas personalizadas
+    const respostasFixas = {
+      "quem é seu dono": "Meu dono é o dogão Heheheh",
+      "quem te criou": "Fui criado pelo incrível Dogão Hehehehe",
+      "você é do dogão?": "Sim! Eu sou 100% do Dogão Hheheheheh",
+      "visionario": "Melhor vazamentos de todos",
+      "dogão": "Melhor do mundo",
+      "Porra": "Para de xingar",
+    };
+  
+    for (const chave in respostasFixas) {
+      if (prompt.includes(chave)) {
+        return res.json({ resposta: respostasFixas[chave] });
+      }
+    }
+  
+    // Chave da Gemini REAL
+    const geminiKey = 'AIzaSyDjricQuCR5Grp8O-joxTukuXnRSngavyQ';
+  
+    try {
+      const response = await axios.post(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`,
+        {
+          contents: [
+            {
+              role: "user",
+              parts: [{ text: query }]
+            }
+          ]
+        },
+        {
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }
+      );
+  
+      const respostaGemini = response.data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sem resposta';
+  
+      res.json({
+        resposta: respostaGemini
+      });
+  
+    } catch (error) {
+      res.status(500).json({
+        error: 'Erro ao chamar a API Gemini',
+        detalhes: error.response?.data || error.message
+      });
+    }
+  });
 
 
 // Inicia o servidor
