@@ -1,9 +1,11 @@
 const express = require('express');
-const axios = require('axios');
 const fs = require('fs');
-const path = require('path');
-
+const axios = require('axios');
+const path = require('path'); // <--- Adiciona isso aqui!
 const app = express();
+const port = 8080;
+// Servir a pasta 'Site' como site principal
+app.use(express.static('Site'));
 const PORT = 8080;
 
 // Carregar chaves de API do arquivo apis.json
