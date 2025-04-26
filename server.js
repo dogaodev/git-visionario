@@ -5,6 +5,7 @@ const fs         = require('fs');
 const session    = require('express-session');
 const mongoose   = require('mongoose');
 const path       = require('path');
+const axios = require('axios');
 const authRoutes = require('./routes/auth');
 
 const app  = express();
@@ -141,7 +142,7 @@ app.get('/apis/consulta/cpf', async (req, res) => {
     return res.status(403).json({ error: 'API Key inválida' });
   }
   try {
-    const response = await axios.get(`https://api-bruxel4s.shop/cpf?query=${encodeURIComponent(query)}`);
+    const response = await axios.get(`https://api-bruxel4s.shop/api/consulta/cpf?query=${encodeURIComponent(query)}`);
     if (!response.data || Object.keys(response.data).length === 0) {
       return res.json({ error: 'Nenhum dado encontrado para este CPF.' });
     }
@@ -192,6 +193,27 @@ app.get('/apis/consulta/cep', async (req, res) => {
   }
 });
 
+
+app.get('/apis/consulta/placa', async (req, res) => {
+  const { query, api_key } = req.query;
+  if (!query || !api_key) {
+    return res.status(400).json({ error: 'Use ?query=PLACA&api_key=PLACA' });
+  }
+  if (!apiKeys[api_key]) {
+    return res.status(403).json({ error: 'API Key inválida' });
+  }
+  try {
+    const response = await axios.get(`https://api-bruxel4s.shop/api/consulta/placa?query=${encodeURIComponent(query)}`);
+    if (!response.data || Object.keys(response.data).length === 0) {
+      return res.json({ error: 'Nenhum dado encontrado para este PLACA.' });
+    }
+    res.json({ resultado: [{ dev: "Dogão karalho", Visionario: (response.data) }] });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao consultar CEP' });
+  }
+});
+// https://api-bruxel4s.shop/api/consulta/placa?query=ABC9999
 app.get('/apis/consulta/ip', async (req, res) => {
   const { query, api_key } = req.query;
   if (!query || !api_key) {

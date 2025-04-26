@@ -1,0 +1,225 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+:root {
+    --color-dark-800: #2f2841;
+    --color-background: #201b2c;
+    --color-shadow-900: #00000056;
+    --color-background-input: #514869;
+    --color-text: #f0ffffde;
+    --color-text-placeholder: #f0ffff94;
+
+    --left-login-font: #77ffc0;
+    --color-green-200: #00ff88;
+    --color-shadow-green: #00ff8052;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    font-family: 'Kanit', sans-serif;
+    box-sizing: border-box;
+}
+
+/* Login e Register */
+#main-login, #main-register {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--color-background);
+}
+
+.left-login, .right-login {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50vw;
+    height: 100vh;
+}
+
+.left-login > h1 {
+    font-size: 3vw;
+    color: var(--left-login-font);
+}
+
+.svg {
+    width: 35vw;
+}
+
+.card-login {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 30px 35px;
+    background-color: var(--color-dark-800);
+    border-radius: 20px;
+    box-shadow: 20px 10px 40px var(--color-shadow-900);
+}
+
+.login-name {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+.login-name > h1 {
+    color: #00ff88;
+    font-weight: bold;
+    margin: 0;
+}
+
+#button {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    right: 170px;
+    margin: 2px 0;
+    background: transparent;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    cursor: pointer;
+}
+
+.icon {
+    width: 100%;
+}
+
+.textfield {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    margin: 10px 0;
+}
+
+.textfield > input {
+    width: 100%;
+    border: none;
+    border-radius: 10px;
+    padding: 15px;
+    background-color: var(--color-background-input);
+    color: var(--color-text);
+    font: 12pt;
+    box-shadow: 20px 10px 40px var(--color-shadow-900);
+    outline: none;
+    box-sizing: border-box;
+}
+
+.textfield > label {
+    color: var(--color-text);
+    margin-bottom: 10px;
+}
+
+.textfield > input::placeholder {
+    color: var(--color-text-placeholder);
+}
+
+.button-login {
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    margin: 25px;
+    padding: 16px 0;
+    outline: none;
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #2b134b;
+    background-color: var(--color-green-200);
+    cursor: pointer;
+    box-shadow: 0px 10px 40px -12px var(--color-shadow-green);
+}
+
+/* Light Mode Login/Register */
+.light#main-login,
+.light#main-register {
+    background-color: #fff;
+}
+
+.light#main-login .card-login,
+.light#main-register .card-login {
+    background-color: #dadada;
+    box-shadow: 20px 10px 40px #6226c5a6;
+}
+
+.light#main-login .button-login,
+.light#main-register .button-login {
+    color: #eeeeee;
+    background-color: #8310F5;
+}
+
+.light#main-login .left-login > h1,
+.light#main-register .left-login > h1 {
+    color: #973df1;
+}
+
+.light#main-login .login-name > h1,
+.light#main-register .login-name > h1 {
+    color: #8310F5;
+}
+
+.light#main-login .textfield > input,
+.light#main-register .textfield > input {
+    background-color: #a8a5b1;
+    box-shadow: 20px 10px 40px #6226c5a6;
+}
+
+.light#main-login .textfield > label,
+.light#main-register .textfield > label {
+    color: #262626;
+}
+
+.light#main-login .textfield > input::placeholder,
+.light#main-register .textfield > input::placeholder {
+    color: #545454cf;
+}
+
+/* Responsividade */
+@media (max-width: 950px) {
+    .card-login {
+        width: 90%;
+    }
+
+    #button {
+        right: 40px;
+    }
+}
+
+@media (max-width: 600px) {
+    #main-login, #main-register {
+        flex-direction: column;
+    }
+
+    .left-login > h1 {
+        display: none;
+    }
+
+    .left-login {
+        width: 100%;
+        height: auto;
+    }
+
+    .svg {
+        width: 50vw;
+    }
+
+    .right-login {
+        width: 100vw;
+        height: 70vh;
+    }
+
+    .card-login {
+        width: 90%;
+    }
+
+    #button {
+        right: 50px;
+    }
+}

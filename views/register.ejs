@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar</title>
+    <link rel="shortcut icon" href="./icon/moon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/public/style.css">
+</head>
+<body>
+    <div id="main-register">
+        <div class="left-login">
+            <h1>Crie Sua conta<br></h1>
+            <a href="https://storyset.com/science">
+                <img src="/svg/Astronaut-bro.svg" alt="astronaut-animate" class="svg">
+            </a>
+        </div>
+        <div class="right-login">
+            <div class="card-login">
+                <div class="login-name">
+                    <h1>REGISTRO</h1>
+                    <button id="button">
+                        <img class="icon" src="https://cdn0.iconfinder.com/data/icons/phosphor-fill-vol-4/256/sun-fill-256.png" style="filter: invert(1);" alt="theme">
+                    </button>
+                </div>
+
+                <form action="/auth/register" method="POST">
+                    <div class="textfield">
+                        <label for="usuario">Usuário</label>
+                        <input type="text" name="username" placeholder="Usuário" required>
+                    </div>
+                    <div class="textfield">
+                        <label for="senha">Senha</label>
+                        <input type="password" name="password" placeholder="Senha" required>
+                    </div>
+                    <button class="button-login" type="submit">Registrar</button>
+                </form>
+
+                <!-- Link voltar -->
+                <div style="margin-top: 15px; text-align: center;">
+                    <a href="/login" style="color: #ccc; text-decoration: none;">Voltar ao login</a>
+                </div>
+                <!-- Fim -->
+
+            </div>
+        </div>
+    </div>
+</body>
+<script src="/public/script.js"></script>
+</html>

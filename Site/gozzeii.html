@@ -1,0 +1,536 @@
+<!DOCTYPE html><html lang="pt-br"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataHub</title>
+    <link rel="stylesheet" href="materialdesignicons.min.css">
+    <meta property="og:title" content="DataHub - RestApi">
+    <meta name="description" content="Uma rest-api para criadores e dev de bots...">
+    <meta property="og:image" content="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStfzAhbO0QroIkkOAKWzS19YiyCNIa5jqpfX8fANmbA0YKoESsyPjGjdqA&amp;s=10">
+    
+    <style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+:root {
+  --bg-dark: rgba(15, 15, 15, 0.9);
+  --accent-purple: rgba(138, 43, 226, 0.7);
+  --text-light: rgba(255, 255, 255, 0.8);
+  --card-bg: rgba(26, 26, 26, 0.9);
+  --header-bg: rgba(26, 26, 26, 0.9);
+}
+
+body {
+  background-image: url('https://mfiles.alphacoders.com/101/1013046.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: var(--text-light);
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background-color: var(--header-bg);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  z-index: 999;
+  gap: 15px;
+}
+
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStfzAhbO0QroIkkOAKWzS19YiyCNIa5jqpfX8fANmbA0YKoESsyPjGjdqA&s=10');
+  background-size: cover;
+  background-position: center;
+}
+
+.menu-toggle {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+
+.menu-toggle span {
+  width: 20px;
+  height: 2px;
+  background-color: var(--text-light);
+  transition: 0.3s;
+}
+
+.menu-toggle:hover {
+  background-color: var(--accent-purple);
+}
+
+.menu-toggle:hover span {
+  background-color: var(--text-light);
+}
+
+.nav-container {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 8px;
+  padding-bottom: 20px;
+  margin-top: -10px;
+}
+
+/* Estilizar a scrollbar */
+.nav-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.nav-container::-webkit-scrollbar-track {
+  background: var(--card-bg);
+  border-radius: 3px;
+}
+
+.nav-container::-webkit-scrollbar-thumb {
+  background: var(--accent-purple);
+  border-radius: 3px;
+}
+
+.nav-container::-webkit-scrollbar-thumb:hover {
+  background: #6a1fc1;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: var(--card-bg);
+  padding: 20px;
+  position: fixed;
+  height: calc(100% - 60px);
+  left: -250px;
+  transition: 0.3s;
+  z-index: 1000;
+  top: 60px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebar.active {
+  left: 0;
+}
+
+.overlay {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: none;
+}
+
+.overlay.active {
+  display: block;
+}
+
+.logo {
+  font-size: 24px;
+  padding: 0 0 20px 0;
+  color: var(--accent-purple);
+  margin-bottom: 30px;
+  font-weight: bold;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.nav-menu {
+  list-style: none;
+  padding-bottom: 15px;
+}
+
+.nav-section {
+  user-select: none;
+}
+
+.nav-section summary {
+  padding: 15px;
+  font-weight: bold;
+  color: var(--accent-purple);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-section details {
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  /* Remove o efeito de foco no Android */
+}
+
+.nav-section summary::after {
+  content: '▶';
+  font-size: 12px;
+  transition: 0.3s;
+}
+
+.nav-section details[open] summary::after {
+  transform: rotate(90deg);
+}
+
+.nav-item {
+  text-decoration: none;
+  padding: 12px 20px;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: 0.3s;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-item:hover {
+  background-color: var(--accent-purple);
+}
+
+.main-content {
+  padding: 80px 30px 30px;
+  transition: 0.3s;
+}
+
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  background-color: var(--card-bg);
+  padding: 20px;
+  border-radius: 12px;
+  border-left: 4px solid var(--accent-purple);
+}
+
+.api-key-container {
+  background-color: var(--card-bg);
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.api-key-container input {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid var(--accent-purple);
+  background-color: var(--bg-dark);
+  color: var(--text-light);
+  margin-top: 10px;
+}
+
+.api-key-container button {
+  background-color: var(--accent-purple);
+  color: var(--text-light);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: 0.3s;
+}
+
+.api-key-container button:hover {
+  opacity: 0.9;
+}
+
+@media (min-width: 768px) {
+  .sidebar {
+    left: 0;
+    top: 60px;
+  }
+  
+  .main-content {
+    margin-left: 250px;
+  }
+  
+  .menu-toggle {
+    display: none;
+  }
+  
+  .overlay {
+    display: none !important;
+  }
+  
+}
+
+select {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid var(--accent-purple);
+  background-color: var(--card-bg);
+  color: var(--text-light);
+  border-radius: 5px;
+  outline: none;
+}
+
+select:hover {
+  border-color: var(--text-light);
+}
+
+    </style>
+  </head>
+  
+  <body>
+    <div class="header">
+      <div class="profile-pic"></div>
+      <div class="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+    
+    <div class="overlay"></div>
+    
+    <nav class="sidebar">
+      <div class="nav-container">
+        <ul class="nav-menu">
+          
+          <li class="nav-section">
+            <details>
+              <summary class="mdi mdi-magnify">CONSULTAS</summary>
+              <a class="nav-item" href="cpf">CPF</a>
+              <a class="nav-item" href="cpf2">CPF (2)</a>
+              <a class="nav-item" href="cpf3">CPF (3)</a>
+              <a class="nav-item" href="nome">NOME</a>
+              <a class="nav-item" href="nome2">NOME (2)</a>
+              <a class="nav-item" href="telefone">TELEFONE</a>
+              <a class="nav-item" href="telefone2">TELEFONE (2)</a>
+              <a class="nav-item" href="placa">PLACA</a>
+              <a class="nav-item" href="cnpj">CNPJ</a>
+              <a class="nav-item" href="cep">CEP</a>
+              <a class="nav-item" href="ip">iP</a>
+            </details>
+          </li>
+          
+          <li class="nav-section">
+            <details>
+              <summary class="mdi mdi-download">DOWNLOAD</summary>
+              <a class="nav-item" href="playaudio">PLAY ÁUDIO</a>
+              <a class="nav-item" href="ytsearch">PESQUISA YOUTUBE</a>
+              <a class="nav-item" href="ytmp3">PLAY YTMP3</a>
+              <a class="nav-item" href="instagram">iNSTAGRAM</a>
+            </details>
+          </li>
+          
+          <li class="nav-section">
+            <details>
+              <summary class="mdi mdi-fire">PORNO/HENTAI</summary>
+              <a class="nav-item" href="pornhub">PORNHUB</a>
+              <a class="nav-item" href="xvideos">XVIDEOS</a>
+              <a class="nav-item" href="neko">NEKO</a>
+              <a class="nav-item" href="waifu">WAIFU</a>
+              <a class="nav-item" href="trap">TRAP</a>
+              <a class="nav-item" href="blowjob">BLOWJOB</a>
+            </details>
+          </li>
+          
+          <li class="nav-section">
+            <details>
+              <summary class="mdi mdi-wrench">OUTROS</summary>
+              <a class="nav-item" href="dafont">DAFONT</a>
+              <a class="nav-item" href="styletext">STYLE TEXT</a>
+              <a class="nav-item" href="metadinha">METADINHA</a>
+            </details>
+          </li>
+          
+          
+        </ul>
+      </div>
+    </nav>
+    
+    <main class="main-content">
+      <div class="stats-container">
+        
+        <div class="stat-card" style="text-align: center;">
+          <h3>Seu iP: </h3>
+          <h2 id="meu-ip">Carregando...</h2>
+        </div>
+        
+        <div class="stat-card" style="text-align: center;">
+          <h3>Tempo de Atividade: </h3>
+          <h2>99.9%</h2>
+          <p>30 dias</p>
+        </div>
+        
+        <div class="stat-card" style="text-align: center;">
+          <h3>Latência Média: </h3>
+          <h2>142ms</h2>
+          <p>Últimas 24h</p>
+        </div>
+        
+        <div class="stat-card" style="text-align: center;">
+          <h2>Consultas: </h2>
+          <select id="consultaTipo">
+            <option value="nome">CONSULTA NOME</option>
+            <option value="cpf">CONSULTA CPF</option>
+            <option value="telefone">CONSULTA TELEFONE</option>
+          </select>
+          
+          <br><br>
+          <input type="text" id="consultaInput" placeholder="Digite aqui..." style="width: 80%; padding: 8px; font-size: 16px; border: 1px solid var(--accent-purple); background-color: var(--card-bg); color: var(--text-light); border-radius: 5px; text-align: center;">
+          <br><br>
+          <button onclick="realizarConsulta()" style="padding: 10px 20px; background: var(--accent-purple); color: var(--text-light); border: none; border-radius: 5px; cursor: pointer;">Consultar</button>
+          <br><br>
+          <div id="resultadoConsulta" style="margin-top: 20px; font-size: 18px; color: var(--text-light);"></div>
+        </div>
+        
+        
+      </div>
+    </main>
+    
+    
+    <script>
+async function realizarConsulta() {
+  const consultaTipo = document.getElementById("consultaTipo").value.toLowerCase();
+  const consultaInput = document.getElementById("consultaInput")
+    .value;
+  const resultadoDiv = document.getElementById("resultadoConsulta");
+  
+  if (consultaInput.trim() === "") {
+    alert("Por favor, digite algo para consultar!");
+    return;
+  }
+  
+  try {
+    if (consultaTipo === "cpf") {
+      url = `/cpf?query=${consultaInput}`;
+      resultadoDiv.textContent = "Consultando...";
+      response = await fetch(url);
+      if (!response.ok) throw new Error("Erro na consulta");
+      data = await response.json();
+      resultadoDiv.innerHTML = `
+<p><strong>NOME:</strong> ${data.nome}</p>
+<p><strong>CPF:</strong> ${data.cpf}</p>
+<p><strong>NASCIMENTO:</strong> ${data.data_nascimento} (Idade: ${data.idade} anos)</p>
+<p><strong>SEXO:</strong> ${data.genero}</p>
+<p><strong>MÃE:</strong> ${data.nome_mae || ''}</p>
+<p><strong>PAI:</strong> ${data.nome_pai || ''}</p>
+<p><strong>SITUACAO CADASTRAL:</strong> ${data.situacao_cadastral}</p>
+<p><strong>DATA SITUAÇÃO CADASTRAL:</strong> ${data.data_situacao_cadastral}</p>
+<p><strong>RENDA MENSAL:</strong> ${data.renda_mensal}</p>
+<p><strong>FAIXA DE RENDA:</strong> ${data.id_faixa_renda}</p>
+<p><strong>CÓDIGO MOSAICO:</strong> ${data.codigo_mosaico}</p>
+<p><strong>ENDEREÇOS:</strong>
+<ul>${data.enderecos.map(endereco => `<li>${endereco.logradouro}, ${endereco.numero} - ${endereco.bairro}, ${endereco.cidade} - ${endereco.estado} (CEP: ${endereco.cep})</li>`).join('')}</ul>
+</p>
+<p><strong>PODER DE COMPRA:</strong> ${data.poder_compra.classificacao}</p>
+<p><strong>FAIXA SALARIAL:</strong> ${data.poder_compra.faixa_salarial}</p>
+<p><strong>RENDA ESTIMADA:</strong> ${data.poder_compra.renda_estimada}</p>
+<p><strong>SCORE DE CRÉDITO:</strong> ${data.score_credito.csb8} (Risco: ${data.score_credito.risco_csb8})</p>`;
+      
+    } else if (consultaTipo === "nome") {
+      url = `/nome?query=${consultaInput}`;
+      resultadoDiv.textContent = "Consultando...";
+      response = await fetch(url);
+      if (!response.ok) throw new Error("Erro na consulta");
+      data = await response.json();
+      resultadoDiv.innerHTML = `
+${data.resultado.map(item => `
+<li>
+<p><strong>Nome:</strong> ${item.name}</p>
+<p><strong>CPF:</strong> ${item.cpf}</p>
+<p><strong>Gênero:</strong> ${item.gender}</p>
+<p><strong>Data de Nascimento:</strong> ${item.birth}</p>
+<p><strong>Idade:</strong> ${item.age}</p>
+<p><strong>Signo:</strong> ${item.sign}</p>
+<hr />
+</li>`).join('')}
+</ul>`;
+      
+    } else if (consultaTipo === "telefone") {
+      url = `/telefone?query=${consultaInput}`;
+      resultadoDiv.textContent = "Consultando...";
+      response = await fetch(url);
+      if (!response.ok) throw new Error("Erro na consulta");
+      data = await response.json();
+      resultadoDiv.innerHTML = `${data.resultado.map(item => `
+<li>
+<p><strong>NOME:</strong> ${item.nome}</p>
+<p><strong>CPF:</strong> ${item.cpf}</p>
+<p><strong>GÊNERO:</strong> ${item.genero}</p>
+<p><strong>IDADE:</strong> ${item.idade}</p>
+<p><strong>NASCIMENTO:</strong> ${item.data_nascimento}</p>
+<p><strong>MÃE:</strong> ${item.nome_mae}</p>
+<p><strong>PAi:</strong> ${item.nome_pai || 'Não informado'}</p>
+<p><strong>MENSAL:</strong> ${item.renda_mensal}</p>
+<p><strong>TELEFONE:</strong> (${item.ddd}) ${item.numero_telefone}</p>
+<p><strong>CLASSIFICAÇÃO:</strong> ${item.classificacao}</p>
+<hr />
+</li>`).join('')}
+</ul>
+`;
+    } else {}
+    
+  } catch (error) {
+    console.log(error);
+    resultadoDiv.textContent = "Erro ao consultar. Tente novamente.";
+  }
+  
+}
+
+const menuToggle = document.querySelector('.menu-toggle');
+const sidebar = document.querySelector('.sidebar');
+const overlay = document.querySelector('.overlay');
+
+menuToggle.addEventListener('click', (e) => {
+  e.stopPropagation();
+  sidebar.classList.toggle('active');
+  overlay.classList.toggle('active');
+});
+
+document.addEventListener('click', (e) => {
+  if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
+  }
+});
+
+async function obterIP() {
+  try {
+    const resposta = await fetch('https://httpbin.org/ip');
+    const dado = await resposta.json();
+    document.getElementById('meu-ip')
+      .textContent = dado.origin;
+  } catch (erro) {
+    console.error('Erro ao obter o IP:', erro);
+    document.getElementById('meu-ip')
+      .textContent = 'Erro ao carregar';
+  }
+}
+
+obterIP();
+
+    </script>
+  
+  
+
+</body></html>
